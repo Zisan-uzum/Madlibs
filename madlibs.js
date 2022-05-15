@@ -26,20 +26,45 @@
  * There are multiple ways to do this, but you may want to use regular expressions.
  * Please go through this lesson: https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/regular-expressions/
  */
+const madLibsEdit = document.querySelector(".madLibsEdit");
+const madLibsPreview = document.querySelector(".madLibsPreview");
+function edit(objList) {
+  const text = document.createElement("p");
+  objList.forEach((obj) => {
+    if (obj.word !== "," && obj.pos !== null) {
+      const mapPos = { n: "noun", v: "verb", a: "adjective" };
+      const posString = obj.pos.join("").slice(1, -1);
+      //console.log(mapPos[posString.match(/n|v|a/).join("")]);
+      const input = document.createElement("input");
+      input.setAttribute("type", "text");
+      input.setAttribute(
+        "placeholder",
+        mapPos[posString.match(/n|v|a/).join("")]
+      );
+      text.appendChild(input);
+      text.innerHTML += " ";
+    } else {
+      const span = document.createElement("span");
+      span.innerText = obj.word + " ";
+      text.appendChild(span);
+    }
+  });
+  madLibsEdit.appendChild(text);
+}
 
 function parseStory(rawStory) {
   // Your code here.
   let parts = rawStory.split(" ");
   let parsed = [];
-  parts.map((part) => {
+  parts.forEach((part) => {
     // look for first word then type then comma
     let word = part.match(/\w+/);
     let pos = part.match(/\[\w+\]/);
-    let comma = part.match(/,/);
+    let punc = part.match(/,|\./);
     let obj1 = { word, pos };
     parsed.push(obj1);
-    if (comma) {
-      parsed.push({ word: "," });
+    if (punc) {
+      parsed.push({ word: punc.join(""), pos: null });
     }
   });
   return parsed;
@@ -55,4 +80,5 @@ getRawStory()
   .then(parseStory)
   .then((processedStory) => {
     console.log(processedStory);
+    edit(processedStory);
   });
