@@ -28,7 +28,11 @@
  */
 const madLibsEdit = document.querySelector(".madLibsEdit");
 const madLibsPreview = document.querySelector(".madLibsPreview");
+// document.addEventListener("keyup", (e) => {
+//   show();
+// });
 function edit(objList) {
+  const elements = [];
   const text = document.createElement("p");
   objList.forEach((obj) => {
     if (obj.word !== "," && obj.pos !== null) {
@@ -42,16 +46,36 @@ function edit(objList) {
         mapPos[posString.match(/n|v|a/).join("")]
       );
       text.appendChild(input);
+      elements.push(input);
+      //console.log(input);
       text.innerHTML += " ";
     } else {
       const span = document.createElement("span");
       span.innerText = obj.word + " ";
       text.appendChild(span);
+      // console.log(span);
+      elements.push(span);
     }
   });
   madLibsEdit.appendChild(text);
+  return elements;
 }
 
+function show(list) {
+  const text = document.createElement("p");
+  text.textContent = "";
+  console.log(list);
+  for (let item of list) {
+    if (item.tagName === "input") {
+      console.log("input is ", item.value);
+      text.textContent += item.value;
+    } else {
+      console.log("span is ", item.textContent);
+      text.textContent += item.textContent;
+    }
+  }
+  madLibsPreview.appendChild(text);
+}
 function parseStory(rawStory) {
   // Your code here.
   let parts = rawStory.split(" ");
@@ -78,7 +102,5 @@ function parseStory(rawStory) {
  */
 getRawStory()
   .then(parseStory)
-  .then((processedStory) => {
-    console.log(processedStory);
-    edit(processedStory);
-  });
+  .then((processedStory) => edit(processedStory))
+  .then((list) => show(list));
