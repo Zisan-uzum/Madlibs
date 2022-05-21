@@ -1,10 +1,10 @@
 const listOfWords = [];
 const madLibsEdit = document.querySelector(".madLibsEdit");
 const madLibsPreview = document.querySelector(".madLibsPreview");
-const previewText = document.createElement("p");
-
+const previewText = document.createElement("p"); // consist preInput class spans which are edited and normal spans
+const editText = document.createElement("p"); // consists contenteditable inputs and spans
 function edit() {
-  const editText = document.createElement("p");
+  editText.innerHTML = "";
   const mapPos = { n: "noun", v: "verb", a: "adjective" };
   let inputCount = 0;
   listOfWords.forEach((obj) => {
@@ -24,23 +24,23 @@ function edit() {
 function preview() {
   const inputs = document.getElementsByTagName("input");
   for (let input of inputs) {
-    input.addEventListener("input", () => {
-      previewText.innerHTML = "";
-      const editElements =
-        document.querySelector(".madLibsEdit").children[0].children;
-      for (let item of editElements) {
-        if (item.tagName === "INPUT") {
-          if (item.value !== "") {
-            previewText.innerHTML += `<span>${item.value}</span>` + " ";
-          } else {
-            previewText.innerHTML += "<span>________</span>" + " ";
-          }
-        } else if (item.tagName == "SPAN") {
-          previewText.innerHTML += `<span>${item.textContent}</span>` + " ";
+    previewText.innerHTML = "";
+    const editElements =
+      document.querySelector(".madLibsEdit").children[0].children;
+    for (let item of editElements) {
+      if (item.tagName === "INPUT") {
+        if (item.value !== "") {
+          previewText.innerHTML +=
+            `<span class ="preInput">${item.value}</span>` + " ";
+        } else {
+          previewText.innerHTML +=
+            "<span class ='preInput'>________</span>" + " ";
         }
+      } else if (item.tagName == "SPAN") {
+        previewText.innerHTML += `<span>${item.textContent}</span>` + " ";
       }
-      madLibsPreview.appendChild(previewText);
-    });
+    }
+    madLibsPreview.appendChild(previewText);
   }
 }
 function hotKey() {
@@ -53,6 +53,7 @@ function hotKey() {
           : inputs[0].focus();
       }
     });
+    input.addEventListener("input", preview);
   });
 }
 function parseStory(rawStory) {
